@@ -185,7 +185,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex gap-3">
                     <button className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-700">
-                        View Live Site
+                        <Link href="/live">View Live Site</Link>
                     </button>
                     <button
                         onClick={() => setShowAddModal(true)}
