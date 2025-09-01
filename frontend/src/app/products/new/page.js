@@ -11,7 +11,9 @@ export default function NewProductPage() {
     const [createdBy, setCreatedBy] = useState("admin");
 
     const now = new Date();
-    const formattedDate = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} by admin`;
+    const formattedDate = `${
+        now.getMonth() + 1
+    }/${now.getDate()}/${now.getFullYear()} by admin`;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,29 +28,11 @@ export default function NewProductPage() {
                 status,
             }),
         });
-        router.push("/products");
+        router.push("/");
     };
 
     return (
         <div>
-            <h1>Add Product</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <br />
-                <textarea
-                    placeholder="Description"
-                    value={desc}
-                    onChange={(e) => setDesc(e.target.value)}
-                />
-                <br />
-                <button type="submit">Create</button>
-            </form>
-
             <div className="fixed inset-0 flex items-center justify-center ">
                 <div className="bg-white rounded-lg shadow-lg w-[400px] p-6">
                     <div className="flex justify-between items-center mb-4">
@@ -56,7 +40,7 @@ export default function NewProductPage() {
                             Add New Product
                         </h2>
                         <button
-                            // onClick={onClose}
+                            onClick={() => router.push("/")}
                             className="text-gray-500 hover:text-black"
                         >
                             ✕
@@ -121,7 +105,7 @@ export default function NewProductPage() {
                         <div className="flex justify-between mt-6">
                             <button
                                 type="button"
-                                // onClick={onClose}
+                                onClick={() => router.push("/")}
                                 className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
                             >
                                 Cancel

@@ -5,7 +5,11 @@ import Link from "next/link";
 
 export default function HomePage() {
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true); // track loading state
+    const [loading, setLoading] = useState(true);
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [username, setUsername] = useState("admin");
 
     const fetchProducts = () => {
         setLoading(true);
@@ -16,14 +20,21 @@ export default function HomePage() {
             .finally(() => setLoading(false));
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm("Are you sure you want to delete this product?")) return;
+    const handleDeleteClick = (product) => {
+        setSelectedProduct(product);
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!selectedProduct) return;
 
         try {
             const res = await fetch(
-                `http://localhost:5000/api/products/${id}`,
+                `http://localhost:5000/api/products/${selectedProduct.product_id}`,
                 {
                     method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ deleted_by: username }),
                 }
             );
 
@@ -31,6 +42,9 @@ export default function HomePage() {
                 throw new Error("Failed to delete product");
             }
 
+            setShowDeleteModal(false);
+            setSelectedProduct(null);
+            setUsername("admin");
             fetchProducts();
         } catch (error) {
             console.error("Delete error:", error);
@@ -70,7 +84,7 @@ export default function HomePage() {
                         View Live Site
                     </button>
                     <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                        Add New Product
+                        <Link href={`/products/new`}>Add New Product</Link>
                     </button>
                 </div>
             </div>
@@ -136,7 +150,7 @@ export default function HomePage() {
                                     </Link>
                                     <button
                                         onClick={() =>
-                                            handleDelete(product.product_id)
+                                            handleDeleteClick(product)
                                         }
                                         className="text-red-600 hover:underline"
                                     >
@@ -148,6 +162,82 @@ export default function HomePage() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Delete Modal */}
+            {showDeleteModal && selectedProduct && (
+                <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+                        {/* Header */}
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-bold">
+                                Delete Product
+                            </h2>
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                className="text-gray-500 hover:text-gray-800"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Warning */}
+                        <div className="flex items-start gap-3 mb-4">
+                            <div className="text-red-500 text-2xl">⚠️</div>
+                            <p className="text-sm text-gray-600">
+                                This will <strong>soft-delete</strong> the
+                                product “{selectedProduct.product_name}”. The
+                                product will be hidden from the main view but
+                                can be recovered if needed.
+                            </p>
+                        </div>
+
+                        {/* Product Details */}
+                        <div className="bg-gray-50 border rounded-lg p-3 mb-4 text-sm">
+                            <p>
+                                <span className="font-medium">Name:</span>{" "}
+                                {selectedProduct.product_name}
+                            </p>
+                            <p>
+                                <span className="font-medium">Status:</span>{" "}
+                                {selectedProduct.status}
+                            </p>
+                            <p>
+                                <span className="font-medium">Created by:</span>{" "}
+                                {selectedProduct.created_by}
+                            </p>
+                        </div>
+
+                        {/* Username input */}
+                        <div className="mb-4">
+                            <label className="text-sm font-medium">
+                                Your Name/Username
+                            </label>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="mt-1 w-full border rounded-md px-3 py-2 text-sm"
+                            />
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                className="px-4 py-2 bg-gray-200 rounded-md text-sm hover:bg-gray-300"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConfirmDelete}
+                                className="px-4 py-2 bg-red-600 text-white rounded-md text-sm hover:bg-red-700"
+                            >
+                                Confirm Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
