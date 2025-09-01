@@ -1,38 +1,38 @@
 import pool from "../config/db.js";
 
 export async function getAllProducts() {
-    const [rows] = await pool.query(
-        "SELECT * FROM Products WHERE is_deleted = FALSE"
+    const res = await pool.query(
+        "SELECT * FROM products WHERE is_deleted = FALSE"
     );
-    return rows;
+    return res.rows;
 }
 
 export async function getProductById(id) {
-    const [rows] = await pool.query(
-        "SELECT * FROM Products WHERE product_id = ? AND is_deleted = FALSE",
+    const res = await pool.query(
+        "SELECT * FROM products WHERE product_id = $1 AND is_deleted = FALSE",
         [id]
     );
-    return rows[0];
+    return res.rows[0];
 }
 
 export async function createProduct({ name, desc, createdBy, status }) {
-    const [result] = await pool.query(
-        "INSERT INTO Products (product_name, product_desc, created_by, status) VALUES (?, ?, ?, ?)",
+    const res = await pool.query(
+        "INSERT INTO products (product_name, product_desc, created_by, status) VALUES ($1, $2, $3, $4) RETURNING product_id",
         [name, desc, createdBy, status]
     );
-    return result.insertId;
+    return res.rows[0].product_id;
 }
 
 export async function updateProduct(id, { name, desc, updatedBy, status }) {
     await pool.query(
-        "UPDATE Products SET product_name=?, product_desc=?, updated_by=?, status=? WHERE product_id=?",
+        "UPDATE products SET product_name=$1, product_desc=$2, updated_by=$3, status=$4 WHERE product_id=$5",
         [name, desc, updatedBy, status, id]
     );
 }
 
 export async function deleteProduct(id) {
     await pool.query(
-        "UPDATE Products SET is_deleted = TRUE WHERE product_id=?",
+        "UPDATE products SET is_deleted = TRUE WHERE product_id=$1",
         [id]
     );
 }
