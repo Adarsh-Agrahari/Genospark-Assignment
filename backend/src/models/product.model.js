@@ -15,10 +15,10 @@ export async function getProductById(id) {
     return res.rows[0];
 }
 
-export async function createProduct({ name, desc, createdBy, status }) {
+export async function createProduct({ name, desc, createdBy, updatedBy, status }) {
     const res = await pool.query(
-        "INSERT INTO products (product_name, product_desc, created_by, status) VALUES ($1, $2, $3, $4) RETURNING product_id",
-        [name, desc, createdBy, status]
+        "INSERT INTO products (product_name, product_desc, created_by, updated_by, status) VALUES ($1, $2, $3, $4, $5) RETURNING product_id",
+        [name, desc, createdBy, updatedBy, status]
     );
     return res.rows[0].product_id;
 }

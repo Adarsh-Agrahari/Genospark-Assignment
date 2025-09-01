@@ -19,6 +19,14 @@ export default function HomePage() {
     const [status, setStatus] = useState("Draft");
     const [createdBy, setCreatedBy] = useState("admin");
 
+    // Edit Product Modal
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editProduct, setEditProduct] = useState(null);
+    const [editName, setEditName] = useState("");
+    const [editDesc, setEditDesc] = useState("");
+    const [editStatus, setEditStatus] = useState("Draft");
+    const [updatedBy, setUpdatedBy] = useState("admin");
+
     const fetchProducts = () => {
         setLoading(true);
         fetch("http://localhost:5000/api/products")
@@ -95,6 +103,56 @@ export default function HomePage() {
         } catch (error) {
             console.error("Add product error:", error);
             alert("Something went wrong while adding the product.");
+        }
+    };
+
+    // Edit Product Handlers
+    const handleEditClick = (product) => {
+        setEditProduct(product);
+        setEditName(product.product_name);
+        setEditDesc(product.product_desc);
+        setEditStatus(product.status);
+
+        if (product.updated_by) {
+            const parts = product.updated_by.split(" by ");
+            setUpdatedBy(parts[1] || "admin");
+        }
+
+        setShowEditModal(true);
+    };
+
+    const handleUpdateProduct = async (e) => {
+        e.preventDefault();
+
+        const now = new Date();
+        const formattedDate = `${
+            now.getMonth() + 1
+        }/${now.getDate()}/${now.getFullYear()} by ${updatedBy}`;
+
+        try {
+            const res = await fetch(
+                `http://localhost:5000/api/products/${editProduct.product_id}`,
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: editName,
+                        desc: editDesc,
+                        status: editStatus,
+                        updatedBy: formattedDate,
+                    }),
+                }
+            );
+
+            if (!res.ok) throw new Error("Failed to update product");
+
+            setShowEditModal(false);
+            setEditProduct(null);
+            setUpdatedBy("admin");
+            fetchProducts();
+        } catch (error) {
+            console.error("Update error:", error);
+            alert("Something went wrong while updating.");
         }
     };
 
@@ -191,12 +249,12 @@ export default function HomePage() {
                                     {product.updated_by}
                                 </td>
                                 <td className="py-3 pl-4 space-x-3">
-                                    <Link
-                                        href={`/products/${product.product_id}/edit`}
+                                    <button
+                                        onClick={() => handleEditClick(product)}
                                         className="text-blue-600 hover:underline"
                                     >
                                         Edit
-                                    </Link>
+                                    </button>
                                     <button
                                         onClick={() =>
                                             handleDeleteClick(product)
@@ -214,7 +272,7 @@ export default function HomePage() {
 
             {/* Delete Modal */}
             {showDeleteModal && selectedProduct && (
-                <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-gray-700 bg-opacity-40 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-bold">
@@ -279,7 +337,7 @@ export default function HomePage() {
 
             {/* Add Product Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-40 z-50">
                     <div className="bg-white rounded-lg shadow-lg w-[400px] p-6">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-semibold">
@@ -340,8 +398,8 @@ export default function HomePage() {
                                 <input
                                     type="text"
                                     value={createdBy}
-                                    readOnly
-                                    className="w-full border rounded p-2 mt-1 bg-gray-100"
+                                    onChange={(e) => setCreatedBy(e.target.value)}
+                                    className="w-full border rounded p-2 mt-1"
                                 />
                             </div>
                             <div className="flex justify-between mt-6">
@@ -357,6 +415,105 @@ export default function HomePage() {
                                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                                 >
                                     Create Product
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Product Modal */}
+            {showEditModal && editProduct && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-40 z-50">
+                    <div className="bg-white rounded-lg shadow-lg w-[400px] p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-semibold">
+                                Edit Product
+                            </h2>
+                            <button
+                                onClick={() => setShowEditModal(false)}
+                                className="text-gray-500 hover:text-black"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <form
+                            onSubmit={handleUpdateProduct}
+                            className="space-y-4"
+                        >
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Product Name *
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editName}
+                                    onChange={(e) =>
+                                        setEditName(e.target.value)
+                                    }
+                                    required
+                                    className="w-full border rounded p-2 mt-1"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Description
+                                </label>
+                                <textarea
+                                    value={editDesc}
+                                    onChange={(e) =>
+                                        setEditDesc(e.target.value)
+                                    }
+                                    className="w-full border rounded p-2 mt-1"
+                                    rows={3}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Status
+                                </label>
+                                <select
+                                    value={editStatus}
+                                    onChange={(e) =>
+                                        setEditStatus(e.target.value)
+                                    }
+                                    className="w-full border rounded p-2 mt-1"
+                                >
+                                    <option>Draft</option>
+                                    <option>Published</option>
+                                    <option>Archived</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Updated By
+                                </label>
+                                <input
+                                    type="text"
+                                    value={updatedBy}
+                                    onChange={(e) =>
+                                        setUpdatedBy(e.target.value)
+                                    }
+                                    className="w-full border rounded p-2 mt-1"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Date will be added automatically
+                                </p>
+                            </div>
+                            <div className="flex justify-between mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowEditModal(false)}
+                                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                >
+                                    Update Product
                                 </button>
                             </div>
                         </form>
