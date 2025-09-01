@@ -7,7 +7,7 @@ export default function ProductsPage() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
-    const now = new Date();
+    const now = new Date().toLocaleDateString();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -67,7 +67,12 @@ export default function ProductsPage() {
                     </p>
 
                     {loading ? (
-                        <p className="text-gray-500">Loading products...</p>
+                        <div className="flex justify-center items-center py-12">
+                            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                            <span className="ml-3 text-gray-500">
+                                Loading products...
+                            </span>
+                        </div>
                     ) : products.length === 0 ? (
                         <p className="text-gray-500">
                             No products published yet.
@@ -100,14 +105,12 @@ export default function ProductsPage() {
                         </div>
                     )}
                 </div>
- 
-                
             </div>
             {/* Footer */}
             <div className="text-center mt-12 text-gray-500 text-sm bg-white p-4">
-                    <p>Products Management System – Live View</p>
-                    <p>Last updated: {now.toLocaleDateString()}</p>
-                </div>
+                <p>Products Management System – Live View</p>
+                <p>Last updated: {now}</p>
+            </div>
         </div>
     );
 }
