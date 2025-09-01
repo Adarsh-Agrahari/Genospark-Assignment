@@ -1,3 +1,6 @@
+
+import "./globals.css";
+
 export const metadata = {
     title: "Product CMS",
     description: "Frontend for Product CMS",

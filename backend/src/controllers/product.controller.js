@@ -21,11 +21,12 @@ export async function getProduct(req, res) {
 
 export async function createProduct(req, res) {
     try {
-        const { name, desc, createdBy, status } = req.body;
+        const { name, desc, createdBy, updatedBy, status } = req.body;
         const id = await ProductModel.createProduct({
             name,
             desc,
             createdBy,
+            updatedBy,
             status,
         });
         res.status(201).json({ id, message: "Product created" });
