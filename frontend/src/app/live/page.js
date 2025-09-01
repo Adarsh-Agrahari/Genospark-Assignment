@@ -6,7 +6,7 @@ export default function LivePage() {
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        fetch("http://localhost:5000/")
+        fetch("https://genospark-assignment-sigma.vercel.app/")
             .then((res) => res.text())
             .then((data) => setMessage(data))
             .catch((err) => console.error(err));

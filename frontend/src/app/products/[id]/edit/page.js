@@ -14,7 +14,7 @@ export default function EditProductPage() {
     const [updatedBy, setUpdatedBy] = useState("admin");
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/products/${id}`)
+        fetch(`https://genospark-assignment-sigma.vercel.app/api/products/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 setName(data.product_name);
@@ -36,7 +36,7 @@ export default function EditProductPage() {
             now.getMonth() + 1
         }/${now.getDate()}/${now.getFullYear()} by ${updatedBy}`;
 
-        await fetch(`http://localhost:5000/api/products/${id}`, {
+        await fetch(`https://genospark-assignment-sigma.vercel.app/api/products/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

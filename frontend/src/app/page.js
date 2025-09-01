@@ -29,7 +29,7 @@ export default function HomePage() {
 
     const fetchProducts = () => {
         setLoading(true);
-        fetch("http://localhost:5000/api/products")
+        fetch("https://genospark-assignment-sigma.vercel.app/api/products")
             .then((res) => res.json())
             .then((data) => setProducts(data))
             .catch((err) => console.error(err))
@@ -47,7 +47,7 @@ export default function HomePage() {
 
         try {
             const res = await fetch(
-                `http://localhost:5000/api/products/${selectedProduct.product_id}`,
+                `https://genospark-assignment-sigma.vercel.app/api/products/${selectedProduct.product_id}`,
                 {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ export default function HomePage() {
         }/${now.getDate()}/${now.getFullYear()} by ${createdBy}`;
 
         try {
-            const res = await fetch("http://localhost:5000/api/products", {
+            const res = await fetch("https://genospark-assignment-sigma.vercel.app/api/products", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -131,7 +131,7 @@ export default function HomePage() {
 
         try {
             const res = await fetch(
-                `http://localhost:5000/api/products/${editProduct.product_id}`,
+                `https://genospark-assignment-sigma.vercel.app/api/products/${editProduct.product_id}`,
                 {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },

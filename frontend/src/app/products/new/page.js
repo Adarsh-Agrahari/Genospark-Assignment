@@ -17,7 +17,7 @@ export default function NewProductPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await fetch("http://localhost:5000/api/products", {
+        await fetch("https://genospark-assignment-sigma.vercel.app/api/products", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

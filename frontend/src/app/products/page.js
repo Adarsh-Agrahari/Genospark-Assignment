@@ -7,7 +7,7 @@ export default function ProductsPage() {
     const [products, setProducts] = useState([]);
 
     const fetchProducts = () => {
-        fetch("http://localhost:5000/api/products")
+        fetch("https://genospark-assignment-sigma.vercel.app/api/products")
             .then((res) => res.json())
             .then((data) => setProducts(data))
             .catch((err) => console.error(err));
@@ -15,7 +15,7 @@ export default function ProductsPage() {
 
     const handleDelete = async (id) => {
         if (!confirm("Are you sure?")) return;
-        await fetch(`http://localhost:5000/api/products/${id}`, {
+        await fetch(`https://genospark-assignment-sigma.vercel.app/api/products/${id}`, {
             method: "DELETE",
         });
         fetchProducts();
