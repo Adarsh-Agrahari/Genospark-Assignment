@@ -78,17 +78,20 @@ export default function HomePage() {
         }/${now.getDate()}/${now.getFullYear()} by ${createdBy}`;
 
         try {
-            const res = await fetch("https://genospark-assignment-sigma.vercel.app/api/products", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name,
-                    desc,
-                    createdBy,
-                    updatedBy: formattedDate,
-                    status,
-                }),
-            });
+            const res = await fetch(
+                "https://genospark-assignment-sigma.vercel.app/api/products",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name,
+                        desc,
+                        createdBy,
+                        updatedBy: formattedDate,
+                        status,
+                    }),
+                }
+            );
 
             if (!res.ok) throw new Error("Failed to create product");
 
@@ -185,7 +188,30 @@ export default function HomePage() {
                 </div>
                 <div className="flex gap-3 flex-col md:flex-row mt-4 w-full md:w-auto">
                     <button className="bg-green-600 text-white px-4 py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-green-700">
-                        <Link href="/live">View Live Site</Link>
+                        <Link href="/live">
+                            <div className="flex items-center gap-2">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-5 h-5"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                    />
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                    />
+                                </svg>
+                                <span>View Live Site</span>
+                            </div>
+                        </Link>
                     </button>
                     <button
                         onClick={() => setShowAddModal(true)}
@@ -201,7 +227,7 @@ export default function HomePage() {
                 <h2 className="text-lg font-bold p-4">All Products</h2>
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="text-gray-600 bg-gray-50 text-xs border-y border-y-gray-50">
+                        <tr className="text-gray-600 bg-gray-50 text-xs border-y border-y-gray-50 hidden md:table-row">
                             <td className="p-2 pl-8">PRODUCT</td>
                             <td className="p-2">STATUS</td>
                             <td className="p-2">CREATED BY</td>
@@ -211,60 +237,118 @@ export default function HomePage() {
                     </thead>
                     <tbody>
                         {products.map((product) => (
-                            <tr
-                                key={product.product_id}
-                                className="border-b border-gray-200 text-xs"
-                            >
-                                <td className="py-3">
-                                    <div className="pl-8">
-                                        <p className="font-medium text-xs pb-1">
-                                            {product.product_name}
+                            <>
+                                <tr
+                                    key={product.product_id}
+                                    className="border-b border-gray-200 text-xs hidden md:table-row"
+                                >
+                                    <td className="py-3">
+                                        <div className="pl-8">
+                                            <p className="font-medium text-xs pb-1">
+                                                {product.product_name}
+                                            </p>
+                                            <p className="text-gray-500 text-xs">
+                                                {product.product_desc}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td className="py-3">
+                                        {product.status === "Published" && (
+                                            <span className="bg-green-100 text-green-800 px-3 py-1 text-xs rounded-full">
+                                                Published
+                                            </span>
+                                        )}
+                                        {product.status === "Draft" && (
+                                            <span className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full">
+                                                Draft
+                                            </span>
+                                        )}
+                                        {product.status === "Archived" && (
+                                            <span className="bg-red-100 text-red-800 px-3 py-1 text-xs rounded-full">
+                                                Archived
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="py-3 pl-4">
+                                        {product.created_by}
+                                    </td>
+                                    <td className="py-3 pl-4">
+                                        {product.updated_by}
+                                    </td>
+                                    <td className="py-3 pl-4 space-x-3">
+                                        <button
+                                            onClick={() =>
+                                                handleEditClick(product)
+                                            }
+                                            className="text-blue-600 hover:underline"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteClick(product)
+                                            }
+                                            className="text-red-600 hover:underline"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <div className="md:hidden flex flex-col gap-2 border-t border-gray-200 p-4">
+                                    <div>
+                                        <div className="flex justify-between items-center">
+                                            <div>
+                                                <p className="font-medium">
+                                                    {product.product_name}
+                                                </p>
+                                                <p className="text-gray-500 text-sm">
+                                                    {product.product_desc}
+                                                </p>
+                                            </div>
+                                            {product.status === "Published" && (
+                                                <span className="bg-green-100 text-green-800 px-3 py-1 text-xs rounded-full">
+                                                    Published
+                                                </span>
+                                            )}
+                                            {product.status === "Draft" && (
+                                                <span className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full">
+                                                    Draft
+                                                </span>
+                                            )}
+                                            {product.status === "Archived" && (
+                                                <span className="bg-red-100 text-red-800 px-3 py-1 text-xs rounded-full">
+                                                    Archived
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <p className="text-xs text-gray-500 pt-4">
+                                            Created by: {product.created_by}
                                         </p>
-                                        <p className="text-gray-500 text-xs">
-                                            {product.product_desc}
+                                        <p className="text-xs text-gray-500">
+                                            Updated by: {product.updated_by}
                                         </p>
                                     </div>
-                                </td>
-                                <td className="py-3">
-                                    {product.status === "Published" && (
-                                        <span className="bg-green-100 text-green-800 px-3 py-1 text-xs rounded-full">
-                                            Published
-                                        </span>
-                                    )}
-                                    {product.status === "Draft" && (
-                                        <span className="bg-gray-100 text-gray-800 px-3 py-1 text-xs rounded-full">
-                                            Draft
-                                        </span>
-                                    )}
-                                    {product.status === "Archived" && (
-                                        <span className="bg-red-100 text-red-800 px-3 py-1 text-xs rounded-full">
-                                            Archived
-                                        </span>
-                                    )}
-                                </td>
-                                <td className="py-3 pl-4">
-                                    {product.created_by}
-                                </td>
-                                <td className="py-3 pl-4">
-                                    {product.updated_by}
-                                </td>
-                                <td className="py-3 pl-4 space-x-3">
-                                    <button
-                                        onClick={() => handleEditClick(product)}
-                                        className="text-blue-600 hover:underline"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() =>
-                                            handleDeleteClick(product)
-                                        }
-                                        className="text-red-600 hover:underline"
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
+                                    <div className="flex gap-4">
+                                        <button
+                                            onClick={() =>
+                                                handleEditClick(product)
+                                            }
+                                            className="text-blue-600 hover:underline bg-blue-50 px-4 py-2 w-1/2 rounded-lg text-center"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteClick(product)
+                                            }
+                                            className="text-red-600 hover:underline bg-red-50 px-4 py-2 w-1/2 rounded-lg text-center"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
                         ))}
                     </tbody>
                 </table>
@@ -398,7 +482,9 @@ export default function HomePage() {
                                 <input
                                     type="text"
                                     value={createdBy}
-                                    onChange={(e) => setCreatedBy(e.target.value)}
+                                    onChange={(e) =>
+                                        setCreatedBy(e.target.value)
+                                    }
                                     className="w-full border rounded p-2 mt-1"
                                 />
                             </div>
