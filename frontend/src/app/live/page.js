@@ -36,12 +36,12 @@ export default function ProductsPage() {
     console.log("products", products);
 
     return (
-        <div className=" bg-gray-50">
-            <div className="container mx-auto px-8 py-12 relative">
+        <div className="w-full bg-gray-50">
+            <div className="container mx-auto md:px-8 md:py-12 relative">
                 {/* Top-right button */}
                 <button
                     onClick={() => router.push("/")}
-                    className="absolute top-6 right-6 px-4 py-2 text-blue text-blue-600 hover:text-blue-800 text-sm font-medium rounded-lg transition"
+                    className="absolute top-6 right-6 px-4 py-2 text-blue text-blue-600 hover:text-blue-800 text-sm font-medium rounded-lg transition hidden md:block"
                 >
                     ← Back to Admin
                 </button>
@@ -54,10 +54,16 @@ export default function ProductsPage() {
                     <p className="mt-2 text-gray-600">
                         Discover our latest published products
                     </p>
+                    <button
+                        onClick={() => router.push("/")}
+                        className="px-4 py-2 text-blue text-blue-600 hover:text-blue-800 text-sm font-medium rounded-lg transition md:hidden"
+                    >
+                        ← Back to Admin
+                    </button>
                 </div>
 
                 {/* Published Products */}
-                <div className="rounded-2xl p-6">
+                <div className="rounded-2xl md:p-6">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">
                         Published Products ({products.length})
                     </h2>
@@ -78,7 +84,7 @@ export default function ProductsPage() {
                             No products published yet.
                         </p>
                     ) : (
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {products.map((product) => (
                                 <div
                                     key={product.id}
@@ -96,7 +102,7 @@ export default function ProductsPage() {
                                         {product.product_desc}
                                     </p>
                                     <hr className="my-4 opacity-10" />
-                                    <div className="mt-4 flex justify-between text-xs text-gray-500">
+                                    <div className="mt-4 flex-col md:flex-row flex justify-between text-xs text-gray-500">
                                         <span>Published</span>
                                         <span>ID: {product.product_id}</span>
                                     </div>
