@@ -4,6 +4,7 @@ A **Next.js 13 (App Router)** project for managing products with an **admin dash
 Built using **React, TailwindCSS, Node.js (API routes)**, and **PostgreSQL** (backend).
 
 Frontend URL : https://genospark-assignment-fe.vercel.app/
+
 Backend URL : https://genospark-assignment-sigma.vercel.app/
 
 ---
